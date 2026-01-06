@@ -15,6 +15,12 @@ app.get('/users', (req, res) => {
     .catch(err => res.json(err))
 })
 
+app.post('/create', (req, res) => {
+    UserModel.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
 app.listen(3001, () => {
     console.log('Server is Running')
 })
