@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "./redux/userSlice.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteUser } from './redux/userSlice';
+import axios from 'axios';
 
 function Users() {
-    const dispatch = useDispatch();
     const users = useSelector((state) => state.user.users);
+    const dispatch = useDispatch();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/users');
-                dispatch(getUser(response.data));
-            } catch(err) {
-                console.log(err)
-            }
-        }
-        fetchData();
-    }, [])
+    const handleDelete = (id) => {
+        axios.delete('http://localhost:3001/deleteuser/' +id)
+        .then(() => {
+            dispatch(deleteUser({id}))
+            console.log(useSelector(state => state.user.users))
+        }).catch(err => console.log(err))
+    }
+    
     return (
         <div className="d-flex vh-100 bg-primary justify-content-center align-items-center">
             <div className="w-50 bg-white rounded p-3">
@@ -41,8 +38,8 @@ function Users() {
                             <td>{user.email}</td>
                             <td>{user.age}</td>
                             <td>
-                            <button className="btn btn-sm btn-success me-2">Update</button>
-                            <button className="btn btn-sm btn-danger">Delete</button>
+                            <Link to={`/edit/${user.id}`} className="btn btn-sm btn-success me-2">Update</Link>
+                            <button onClick={() => handleDelete(user.id)} className="btn btn-sm btn-danger">Delete</button>
                             </td>
                         </tr>
                         ))}

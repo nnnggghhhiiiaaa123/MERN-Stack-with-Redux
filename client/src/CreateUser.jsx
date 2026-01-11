@@ -1,15 +1,24 @@
 import axios from "axios";
 import { useState } from "react";
+import { addUser } from "./redux/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function CreateUser() {
     const [name, setName] = useState()
     const [email, setEmail] = useState()
     const [age, setAge] = useState()
     
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post("http://localhost:3001/create", {name, email, age})
-        .then(res => {console.log(res.data)})
+        .then(res => {
+            dispatch(addUser(res.data))
+            navigate("/")
+        })
         .catch(err => {console.log(err)})
     }
 
